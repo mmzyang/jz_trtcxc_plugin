@@ -5,9 +5,8 @@
  */
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+export 'package:trtc_jz_flutter/jztrtc_handle_manager.dart';
 
 class TrtcJzFlutter {
   static const MethodChannel _channel = const MethodChannel('trtc_jz_flutter');

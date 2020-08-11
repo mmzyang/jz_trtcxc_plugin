@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:trtc_jz_flutter/trtc_jz_flutter.dart';
-import 'package:trtc_jz_flutter_example/jztrtc_handle_manager.dart';
 
 class JZVideoPlayerController {
   MethodChannel _channel;
@@ -65,8 +64,8 @@ class _JZTRTCLoaderState extends State {
   }
 
   void _openDSRSDK() async {
-    var result =
-        await JZTRTCPluginManager.initTrtcLocalUser("123892189312831890", 1256732);
+    var result = await JZTRTCPluginManager.initTrtcLocalUser(
+        "123892189312831890", 1256732);
     var result1 = await JZTRTCPluginManager.startLocalAudio();
     var result2 = await JZTRTCPluginManager.startLocalPreview(true);
     print(result);
