@@ -13,10 +13,10 @@ class JZTRTCPluginManager {
   static Future<dynamic> initTrtcLocalUser(
       String userId, String sdkappid, String userSig, String roomId) async {
     var result = await _channel.invokeMethod('initTrtcLocalUser', {
-      'userId': userId,
+      'userid': userId,
       'sdkappid': sdkappid,
-      'userSig': userSig,
-      'roomId': roomId
+      'usersig': userSig,
+      'roomid': roomId
     });
     return result;
   }
