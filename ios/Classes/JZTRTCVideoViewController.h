@@ -1,3 +1,8 @@
+/*
+ * @Descripttion: 
+ * @Author: xuci
+ * @Date: 2020-08-07 15:08:00
+ */
 //
 //  JZTRTCVideoViewController.h
 //  Runner
@@ -11,13 +16,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface JZTRTCVideoViewController : NSObject <FlutterPlatformView, TRTCCloudDelegate> {
+@interface JZTRTCVideoViewController : NSObject <FlutterPlatformView, FlutterStreamHandler, TRTCCloudDelegate>
+{
     int64_t _viewId;
     FlutterMethodChannel *_channel;
+    FlutterEventSink _eventSink;
     UIView *_subView;
 }
 
-@property (nonatomic, strong) TRTCCloud *trtcCloud;
+@property(nonatomic, strong) TRTCCloud *trtcCloud;
 
 - (id)initWithFrame:(CGRect)frame viewId:(int64_t)viewId args:(id)args binaryMessenger:(NSObject<FlutterBinaryMessenger> *)messenger;
 

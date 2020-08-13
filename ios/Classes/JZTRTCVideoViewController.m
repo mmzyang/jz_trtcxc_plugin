@@ -28,6 +28,9 @@
             _subView.frame = frame;
         }
 
+        FlutterEventChannel *eventChannel = [FlutterEventChannel eventChannelWithName:@"com.jz.TrtcJzFlutterViewEvent" binaryMessenger:messenger];
+        [eventChannel setStreamHandler:self];
+
         _channel = [FlutterMethodChannel methodChannelWithName:@"com.jz.TrtcJzFlutterView" binaryMessenger:messenger];
         __weak __typeof__(self) weakSelf = self;
         [_channel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
@@ -37,10 +40,20 @@
     return self;
 }
 
+- (FlutterError *)onListenWithArguments:(id)arguments eventSink:(FlutterEventSink)events{
+    _eventSink = events;    
+    return nil;
+}
+
+- (FlutterError * _Nullable)onCancelWithArguments:(id _Nullable)arguments {
+    _eventSink = nil;
+    return nil;
+}
+
 - (void)onMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result{
     NSDictionary *arguments = [call arguments];
     if([@"initTrtcLocalUser" isEqualToString:call.method]) {
-      [self initTrtcLocalUser:arguments[@"userId"] roomId:[arguments[@"roomId"] intValue]];
+      [self initTrtcLocalUser:arguments[@"userid"] sdkappid:[arguments[@"sdkappid"] intValue] userSig:arguments[@"usersig"] roomId:[arguments[@"roomid"] intValue]];
       result(nil);
     } else if([@"startLocalAudio" isEqualToString:call.method]) {
       [self startLocalAudio];
@@ -70,11 +83,11 @@
 }
 
 #pragma mark --TRTC Delegate
-- (void)initTrtcLocalUser:(NSString *)userId roomId:(UInt32)roomId {
+- (void)initTrtcLocalUser:(NSString *)userId sdkappid:(UInt32)sdkappid userSig:(NSString *)userSig roomId:(UInt32)roomId {
     NSLog(@">>>>>>>>>> 1111111");
 
     TRTCParams *param = [TRTCParams new];
-    param.sdkAppId = 0;
+    param.sdkAppId = sdkappid;
     param.userId = userId;
     param.roomId = roomId;
     param.role = TRTCRoleAnchor;
@@ -118,7 +131,7 @@
 }
 
 - (void)onRemoteUserEnterRoom:(NSString *)userId {
-    
+    _eventSink(@"onRemoteUserEnterRoom");
 }
 
 @end

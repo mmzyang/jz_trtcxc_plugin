@@ -3,6 +3,8 @@
  * @Author: xuci
  * @Date: 2020-08-10 15:02:36
  */
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -25,6 +27,18 @@ class JZTRTCLoader extends StatefulWidget {
 }
 
 class _JZTRTCLoaderState extends State {
+  EventChannel eventChannel = EventChannel('com.jz.TrtcJzFlutterViewEvent');
+  @override
+  void initState() {
+    eventChannel.receiveBroadcastStream().listen((data) {
+      print("native 回调的值：" + data.toString());
+    }, onError: (error) {
+      print("native 回调的错误：" + error.toString());
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +79,7 @@ class _JZTRTCLoaderState extends State {
 
   void _openDSRSDK() async {
     var result = await JZTRTCPluginManager.initTrtcLocalUser(
-        "123892189312831890", 1256732);
+        "123892189312831890", "0", "123213", "23123112321312312321421");
     var result1 = await JZTRTCPluginManager.startLocalAudio();
     var result2 = await JZTRTCPluginManager.startLocalPreview(true);
     print(result);
