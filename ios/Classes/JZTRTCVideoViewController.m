@@ -33,8 +33,8 @@
         _remoteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 120)];
         [_subView addSubview:_remoteView];
         
-        [self storeLocalVideoView];
-        [self storeRemoteVideoView];
+        [JZTRTCVideoViewController storeLocalVideoView:_subView];
+        [JZTRTCVideoViewController storeRemoteVideoView:_remoteView];
         
         _channel = [FlutterMethodChannel methodChannelWithName:@"com.jz.TrtcJzFlutterView" binaryMessenger:messenger];
         __weak typeof(self) weakSelf = self;
@@ -45,18 +45,28 @@
     return self;
 }
 
-- (void)storeLocalVideoView {
-    if (_subView) {
-        objc_setAssociatedObject(self, &kJZTRTCVideoViewControllerLocalVideoViewKey, _subView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
++ (void)storeLocalVideoView:(UIView *)localview {
+    if (localview) {
+        objc_setAssociatedObject(self, &kJZTRTCVideoViewControllerLocalVideoViewKey, localview, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        return;
     }
     NSLog(@"localview 为空，保存失败!!!!!!!");
 }
 
-- (void)storeRemoteVideoView {
-    if (_remoteView) {
-        objc_setAssociatedObject(self, &kJZTRTCVideoViewControllerRemoteVideoViewKey, _remoteView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
++ (void)storeRemoteVideoView:(UIView *)remoteview {
+    if (remoteview) {
+        objc_setAssociatedObject(self, &kJZTRTCVideoViewControllerRemoteVideoViewKey, remoteview, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        return;
     }
     NSLog(@"remoteview 为空，保存失败!!!!!!!");
+}
+
++ (UIView *)getLocalView {
+    return objc_getAssociatedObject(self, &kJZTRTCVideoViewControllerLocalVideoViewKey);
+}
+
++ (UIView *)getRemoteView {
+    return objc_getAssociatedObject(self, &kJZTRTCVideoViewControllerRemoteVideoViewKey);
 }
 
 //view 方法交互

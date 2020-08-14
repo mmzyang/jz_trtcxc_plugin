@@ -105,13 +105,13 @@
 }
 
 - (void)startLocalPreview:(BOOL)isFrontCamera {
-    UIView *localVideoView = objc_getAssociatedObject(self, &kJZTRTCVideoViewControllerLocalVideoViewKey);
+    UIView *localVideoView = [JZTRTCVideoViewController getLocalView];
     [self.trtcCloud startLocalPreview:isFrontCamera view:localVideoView];
 }
 
 - (void)startRemoteVideoView {
     if (self.remoteUserIds.count > 0) {
-        UIView *remoteVideoView = objc_getAssociatedObject(self, &kJZTRTCVideoViewControllerRemoteVideoViewKey);
+        UIView *remoteVideoView = [JZTRTCVideoViewController getRemoteView];
         [self.trtcCloud startRemoteView:self.remoteUserIds[0] view:remoteVideoView];
     }
 }

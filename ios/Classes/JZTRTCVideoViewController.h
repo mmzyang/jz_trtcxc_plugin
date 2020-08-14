@@ -19,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 static NSString *kJZTRTCVideoViewControllerLocalVideoViewKey = @"kJZTRTCVideoViewControllerLocalVideoViewKey"; //存放 localvideoview
 static NSString *kJZTRTCVideoViewControllerRemoteVideoViewKey = @"kJZTRTCVideoViewControllerRemoteVideoViewKey"; //存放 remotevideoview
 
+static const NSString *kStoreKey = @"kStoreKey";
+
 @interface JZTRTCVideoViewController : NSObject <FlutterPlatformView, TRTCCloudDelegate>{
     int64_t _viewId;
     FlutterMethodChannel *_channel;
@@ -29,6 +31,11 @@ static NSString *kJZTRTCVideoViewControllerRemoteVideoViewKey = @"kJZTRTCVideoVi
 
 
 - (id)initWithFrame:(CGRect)frame viewId:(int64_t)viewId args:(id)args binaryMessenger:(NSObject<FlutterBinaryMessenger> *)messenger;
+
++ (void)storeRemoteVideoView:(UIView *)remoteview;
++ (void)storeLocalVideoView:(UIView *)localview;
++ (UIView *)getRemoteView;
++ (UIView *)getLocalView;
 
 @end
 
