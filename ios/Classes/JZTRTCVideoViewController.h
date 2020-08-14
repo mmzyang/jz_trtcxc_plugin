@@ -20,11 +20,14 @@ NS_ASSUME_NONNULL_BEGIN
 {
     int64_t _viewId;
     FlutterMethodChannel *_channel;
-    FlutterEventSink _eventSink;
+    FlutterEventChannel *_eventChannel;
+    FlutterBasicMessageChannel *_basicMessageChannel;
     UIView *_subView;
+    UIView *_remoteView;
 }
 
-@property(nonatomic, strong) TRTCCloud *trtcCloud;
+@property (nonatomic, strong) TRTCCloud *trtcCloud;
+@property (nonatomic, strong) NSMutableArray *remoteUserIds;
 
 - (id)initWithFrame:(CGRect)frame viewId:(int64_t)viewId args:(id)args binaryMessenger:(NSObject<FlutterBinaryMessenger> *)messenger;
 

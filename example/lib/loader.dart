@@ -27,10 +27,11 @@ class JZTRTCLoader extends StatefulWidget {
 }
 
 class _JZTRTCLoaderState extends State {
-  EventChannel eventChannel = EventChannel('com.jz.TrtcJzFlutterViewEvent');
+  static const EventChannel eventChannel =
+      EventChannel('com.jz.TrtcJzFlutterView.Event');
   @override
   void initState() {
-    eventChannel.receiveBroadcastStream().listen((data) {
+    eventChannel.receiveBroadcastStream("init").listen((data) {
       print("native 回调的值：" + data.toString());
     }, onError: (error) {
       print("native 回调的错误：" + error.toString());
@@ -70,9 +71,7 @@ class _JZTRTCLoaderState extends State {
         "text": "点击开始双录",
       },
       creationParamsCodec: const StandardMessageCodec(),
-      onPlatformViewCreated: (id) {
-        print("打印 id" + id.toString());
-      },
+      onPlatformViewCreated: (id) {},
       hitTestBehavior: PlatformViewHitTestBehavior.opaque,
     );
   }

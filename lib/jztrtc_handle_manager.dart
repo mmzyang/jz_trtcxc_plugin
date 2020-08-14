@@ -39,4 +39,10 @@ class JZTRTCPluginManager {
         .invokeMethod('startLocalPreview', {'isFrontCamera': isFrontCamera});
     return result;
   }
+
+  /// 打开远端视频
+  static Future<dynamic> startRemoteVideoView() async {
+    var result = await _channel.invokeMethod('startRemoteVideoView');
+    return result;
+  }
 }

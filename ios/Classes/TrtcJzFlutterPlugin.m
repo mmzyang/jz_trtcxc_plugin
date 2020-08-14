@@ -13,6 +13,7 @@
   FlutterMethodChannel* channel = [FlutterMethodChannel methodChannelWithName:@"trtc_jz_flutter" binaryMessenger:[registrar messenger]];
   [registrar addMethodCallDelegate:[[TrtcJzFlutterPlugin alloc] initWithChannel:channel registrar:registrar messenger:registrar.messenger] channel:channel];
   [registrar registerViewFactory:[[MyPlatformViewFactory alloc] initWithMessenger:registrar.messenger] withId:@"com.jz.TrtcJzFlutterView"];
+//    [self registrarEvent:registrar];
 }
 
 - (instancetype)initWithChannel:(FlutterMethodChannel *)channel registrar:(NSObject<FlutterPluginRegistrar>*)registrar messenger:(NSObject<FlutterBinaryMessenger>*)messenger {
@@ -24,6 +25,14 @@
     
     return self;
 }
+
+//+ (void)registrarEvent:(NSObject<FlutterPluginRegistrar>*)registrar {
+//    FlutterEventChannel *eventChannel = [FlutterEventChannel eventChannelWithName:@"com.jz.TrtcJzFlutterViewEvent" binaryMessenger:registrar.messenger];
+//    [eventChannel setStreamHandler:^NSObject<FlutterStreamHandler> *(id arguments) {
+//        return [JZTRTCVideoViewController new];
+//    }];
+//    
+//}
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
   NSDictionary *arguments = [call arguments];

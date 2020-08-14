@@ -27,21 +27,25 @@
         } else {
             _subView.frame = frame;
         }
+        
+        _remoteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 120)];
+        [_subView addSubview:_remoteView];
 
-        FlutterEventChannel *eventChannel = [FlutterEventChannel eventChannelWithName:@"com.jz.TrtcJzFlutterViewEvent" binaryMessenger:messenger];
-        [eventChannel setStreamHandler:self];
-
+        basicMessageChannel = [FlutterBasicMessageChannel messageChannelWithName:@"com.jz.TrtcJzFlutterView.basicMessageChannel" binaryMessenger:messenger codec:[FlutterStringCodec sharedInstance]];
         _channel = [FlutterMethodChannel methodChannelWithName:@"com.jz.TrtcJzFlutterView" binaryMessenger:messenger];
-        __weak __typeof__(self) weakSelf = self;
+        __weak typeof(self) weakSelf = self;
         [_channel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
             [weakSelf onMethodCall:call result:result];
+        }];
+        [basicMessageChannrl setMessageHandler:^(id  _Nullable message, FlutterReply  _Nonnull callback) {
+            callback(message);
         }];
     }
     return self;
 }
 
-- (FlutterError *)onListenWithArguments:(id)arguments eventSink:(FlutterEventSink)events{
-    _eventSink = events;    
+- (FlutterError *)onListenWithArguments:(id)arguments eventSink:(FlutterEventSink)events {
+    _eventSink = events;
     return nil;
 }
 
@@ -64,14 +68,23 @@
     } else if([@"startLocalPreview" isEqualToString:call.method]) {
       [self startLocalPreview:[arguments[@"isFrontCamera"] boolValue]];
       result(nil);
-    }
-     else {
+    } else if ([@"startRemoteVideoView" isEqualToString:call.method]) {
+        [self startRemoteVideoView];
+        result(nil);
+    } else {
       result(FlutterMethodNotImplemented);
     }
 }
 
 - (nonnull UIView *)view {
     return _subView;
+}
+
+- (NSMutableArray *)remoteUserIds {
+    if (!_remoteUserIds) {
+        _remoteUserIds = [NSMutableArray array];
+    }
+    return _remoteUserIds;
 }
 
 - (TRTCCloud *)trtcCloud {
@@ -84,14 +97,12 @@
 
 #pragma mark --TRTC Delegate
 - (void)initTrtcLocalUser:(NSString *)userId sdkappid:(UInt32)sdkappid userSig:(NSString *)userSig roomId:(UInt32)roomId {
-    NSLog(@">>>>>>>>>> 1111111");
-
     TRTCParams *param = [TRTCParams new];
     param.sdkAppId = sdkappid;
     param.userId = userId;
     param.roomId = roomId;
     param.role = TRTCRoleAnchor;
-    param.userSig = [GenerateTestUserSig genTestUserSig:param.userId];
+    param.userSig = userSig;
     [self.trtcCloud enterRoom:param appScene:TRTCAppSceneVideoCall];
 
    TRTCVideoEncParam *videoEncParam = [TRTCVideoEncParam new];
@@ -106,15 +117,22 @@
    [beautyManager setWhitenessLevel:1];
 
    [self.trtcCloud setDebugViewMargin:userId margin:UIEdgeInsetsMake(80, 0, 0, 0)];
+    
+    _eventSink(@"张涛");
 }
 
 - (void)startLocalAudio {
-    NSLog(@">>>>>>>>>> 2222222");
     [self.trtcCloud startLocalAudio];
 }
 
 - (void)startLocalPreview:(BOOL)isFrontCamera {
     [self.trtcCloud startLocalPreview:isFrontCamera view:_subView];
+}
+
+- (void)startRemoteVideoView {
+    if (self.remoteUserIds.count > 0) {
+        [self.trtcCloud startRemoteView:self.remoteUserIds[0] view:_remoteView];
+    }
 }
 
 - (void)exitRoom {
@@ -127,11 +145,14 @@
 
 /// delegate
 - (void)onUserVideoAvailable:(NSString *)userId available:(BOOL)available {
-    
+    [_basicMessageChannel sendMessage:@"onUserVideoAvailable"];
+    if (available) {
+        [self.remoteUserIds addObject:userId];
+    }
 }
 
 - (void)onRemoteUserEnterRoom:(NSString *)userId {
-    _eventSink(@"onRemoteUserEnterRoom");
+    [_basicMessageChannel sendMessage:@"onRemoteUserEnterRoom"];
 }
 
 @end
