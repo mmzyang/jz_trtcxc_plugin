@@ -7,6 +7,7 @@
 
 #import "JZTRTCVideoViewController.h"
 #import "GenerateTestUserSig.h"
+#import "TrtcJzFlutterPlugin.h"
 
 @implementation JZTRTCVideoViewController
 
@@ -30,15 +31,11 @@
         
         _remoteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 120)];
         [_subView addSubview:_remoteView];
-
-        _basicMessageChannel = [FlutterBasicMessageChannel messageChannelWithName:@"com.jz.TrtcJzFlutterView.basicMessageChannel" binaryMessenger:messenger codec:[FlutterStringCodec sharedInstance]];
+        
         _channel = [FlutterMethodChannel methodChannelWithName:@"com.jz.TrtcJzFlutterView" binaryMessenger:messenger];
         __weak typeof(self) weakSelf = self;
         [_channel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
             [weakSelf onMethodCall:call result:result];
-        }];
-        [_basicMessageChannel setMessageHandler:^(id  _Nullable message, FlutterReply  _Nonnull callback) {
-            callback(message);
         }];
     }
     return self;
@@ -133,14 +130,14 @@
 
 /// delegate
 - (void)onUserVideoAvailable:(NSString *)userId available:(BOOL)available {
-    [_basicMessageChannel sendMessage:@"onUserVideoAvailable"];
+    [[TrtcJzFlutterPlugin new].basicMessageChannel sendMessage:@"onUserVideoAvailable"];
     if (available) {
         [self.remoteUserIds addObject:userId];
     }
 }
 
 - (void)onRemoteUserEnterRoom:(NSString *)userId {
-    [_basicMessageChannel sendMessage:@"onRemoteUserEnterRoom"];
+    [[TrtcJzFlutterPlugin new].basicMessageChannel sendMessage:@"onRemoteUserEnterRoom"];
 }
 
 @end

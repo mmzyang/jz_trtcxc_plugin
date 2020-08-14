@@ -8,6 +8,7 @@
 
 @interface TrtcJzFlutterPlugin : NSObject <FlutterPlugin, TRTCCloudDelegate>
 
-@property (nonatomic, strong) TRTCCloud *trtcCloud;
+@property (nonatomic, strong) FlutterBasicMessageChannel *basicMessageChannel;
+;
 
 @end

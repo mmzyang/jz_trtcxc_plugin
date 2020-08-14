@@ -21,7 +21,6 @@ NS_ASSUME_NONNULL_BEGIN
     int64_t _viewId;
     FlutterMethodChannel *_channel;
     FlutterEventChannel *_eventChannel;
-    FlutterBasicMessageChannel *_basicMessageChannel;
     UIView *_subView;
     UIView *_remoteView;
 }
