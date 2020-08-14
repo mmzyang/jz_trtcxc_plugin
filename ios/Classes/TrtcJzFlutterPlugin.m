@@ -39,7 +39,7 @@
     return self;
 }
 
-- (void)onMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result{
+- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result{
     NSDictionary *arguments = [call arguments];
     if([@"initTrtcLocalUser" isEqualToString:call.method]) {
       [self initTrtcLocalUser:arguments[@"userid"] sdkappid:[arguments[@"sdkappid"] intValue] userSig:arguments[@"usersig"] roomId:[arguments[@"roomid"] intValue]];

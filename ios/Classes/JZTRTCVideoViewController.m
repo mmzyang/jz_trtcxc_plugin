@@ -33,6 +33,9 @@
         _remoteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 120)];
         [_subView addSubview:_remoteView];
         
+        [self storeLocalVideoView];
+        [self storeRemoteVideoView];
+        
         _channel = [FlutterMethodChannel methodChannelWithName:@"com.jz.TrtcJzFlutterView" binaryMessenger:messenger];
         __weak typeof(self) weakSelf = self;
         [_channel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
