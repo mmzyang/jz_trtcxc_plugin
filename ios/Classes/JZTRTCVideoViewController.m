@@ -31,27 +31,17 @@
         _remoteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 120)];
         [_subView addSubview:_remoteView];
 
-        basicMessageChannel = [FlutterBasicMessageChannel messageChannelWithName:@"com.jz.TrtcJzFlutterView.basicMessageChannel" binaryMessenger:messenger codec:[FlutterStringCodec sharedInstance]];
+        _basicMessageChannel = [FlutterBasicMessageChannel messageChannelWithName:@"com.jz.TrtcJzFlutterView.basicMessageChannel" binaryMessenger:messenger codec:[FlutterStringCodec sharedInstance]];
         _channel = [FlutterMethodChannel methodChannelWithName:@"com.jz.TrtcJzFlutterView" binaryMessenger:messenger];
         __weak typeof(self) weakSelf = self;
         [_channel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
             [weakSelf onMethodCall:call result:result];
         }];
-        [basicMessageChannrl setMessageHandler:^(id  _Nullable message, FlutterReply  _Nonnull callback) {
+        [_basicMessageChannel setMessageHandler:^(id  _Nullable message, FlutterReply  _Nonnull callback) {
             callback(message);
         }];
     }
     return self;
-}
-
-- (FlutterError *)onListenWithArguments:(id)arguments eventSink:(FlutterEventSink)events {
-    _eventSink = events;
-    return nil;
-}
-
-- (FlutterError * _Nullable)onCancelWithArguments:(id _Nullable)arguments {
-    _eventSink = nil;
-    return nil;
 }
 
 - (void)onMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result{
@@ -117,8 +107,6 @@
    [beautyManager setWhitenessLevel:1];
 
    [self.trtcCloud setDebugViewMargin:userId margin:UIEdgeInsetsMake(80, 0, 0, 0)];
-    
-    _eventSink(@"张涛");
 }
 
 - (void)startLocalAudio {

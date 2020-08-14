@@ -16,7 +16,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface JZTRTCVideoViewController : NSObject <FlutterPlatformView, FlutterStreamHandler, TRTCCloudDelegate>
+@interface JZTRTCVideoViewController : NSObject <FlutterPlatformView, TRTCCloudDelegate>
 {
     int64_t _viewId;
     FlutterMethodChannel *_channel;
