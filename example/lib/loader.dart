@@ -77,10 +77,10 @@ class _JZTRTCLoaderState extends State {
   }
 
   void _openDSRSDK() async {
-    var result = await JZTRTCPluginManager.initTrtcLocalUser(
+    var result = await TrtcJzFlutter.initTrtcLocalUser(
         "123892189312831890", "0", "123213", "23123112321312312321421");
-    var result1 = await JZTRTCPluginManager.startLocalAudio();
-    var result2 = await JZTRTCPluginManager.startLocalPreview(true);
+    var result1 = await TrtcJzFlutter.startLocalAudio();
+    var result2 = await TrtcJzFlutter.startLocalPreview(true);
     print(result);
     print(result1);
     print(result2);

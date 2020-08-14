@@ -16,8 +16,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface JZTRTCVideoViewController : NSObject <FlutterPlatformView, TRTCCloudDelegate>
-{
+static NSString *kJZTRTCVideoViewControllerLocalVideoViewKey = @"kJZTRTCVideoViewControllerLocalVideoViewKey"; //存放 localvideoview
+static NSString *kJZTRTCVideoViewControllerRemoteVideoViewKey = @"kJZTRTCVideoViewControllerRemoteVideoViewKey"; //存放 remotevideoview
+
+@interface JZTRTCVideoViewController : NSObject <FlutterPlatformView, TRTCCloudDelegate>{
     int64_t _viewId;
     FlutterMethodChannel *_channel;
     FlutterEventChannel *_eventChannel;
@@ -25,8 +27,6 @@ NS_ASSUME_NONNULL_BEGIN
     UIView *_remoteView;
 }
 
-@property (nonatomic, strong) TRTCCloud *trtcCloud;
-@property (nonatomic, strong) NSMutableArray *remoteUserIds;
 
 - (id)initWithFrame:(CGRect)frame viewId:(int64_t)viewId args:(id)args binaryMessenger:(NSObject<FlutterBinaryMessenger> *)messenger;
 

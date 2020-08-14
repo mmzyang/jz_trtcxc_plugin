@@ -8,6 +8,7 @@
 #import "JZTRTCVideoViewController.h"
 #import "GenerateTestUserSig.h"
 #import "TrtcJzFlutterPlugin.h"
+#import <objc/runtime.h>
 
 @implementation JZTRTCVideoViewController
 
@@ -41,103 +42,27 @@
     return self;
 }
 
-- (void)onMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result{
-    NSDictionary *arguments = [call arguments];
-    if([@"initTrtcLocalUser" isEqualToString:call.method]) {
-      [self initTrtcLocalUser:arguments[@"userid"] sdkappid:[arguments[@"sdkappid"] intValue] userSig:arguments[@"usersig"] roomId:[arguments[@"roomid"] intValue]];
-      result(nil);
-    } else if([@"startLocalAudio" isEqualToString:call.method]) {
-      [self startLocalAudio];
-      result(nil);
-    } else if([@"exitRoom" isEqualToString:call.method]) {
-      [self exitRoom];
-      result(nil);
-    } else if([@"startLocalPreview" isEqualToString:call.method]) {
-      [self startLocalPreview:[arguments[@"isFrontCamera"] boolValue]];
-      result(nil);
-    } else if ([@"startRemoteVideoView" isEqualToString:call.method]) {
-        [self startRemoteVideoView];
-        result(nil);
-    } else {
-      result(FlutterMethodNotImplemented);
+- (void)storeLocalVideoView {
+    if (_subView) {
+        objc_setAssociatedObject(self, &kJZTRTCVideoViewControllerLocalVideoViewKey, _subView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
+    NSLog(@"localview 为空，保存失败!!!!!!!");
+}
+
+- (void)storeRemoteVideoView {
+    if (_remoteView) {
+        objc_setAssociatedObject(self, &kJZTRTCVideoViewControllerRemoteVideoViewKey, _remoteView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    NSLog(@"remoteview 为空，保存失败!!!!!!!");
+}
+
+//view 方法交互
+- (void)onMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result{
+    result(FlutterMethodNotImplemented);
 }
 
 - (nonnull UIView *)view {
     return _subView;
-}
-
-- (NSMutableArray *)remoteUserIds {
-    if (!_remoteUserIds) {
-        _remoteUserIds = [NSMutableArray array];
-    }
-    return _remoteUserIds;
-}
-
-- (TRTCCloud *)trtcCloud {
-    if (!_trtcCloud) {
-        _trtcCloud = [TRTCCloud sharedInstance];
-        _trtcCloud.delegate = self;
-    }
-    return _trtcCloud;
-}
-
-#pragma mark --TRTC Delegate
-- (void)initTrtcLocalUser:(NSString *)userId sdkappid:(UInt32)sdkappid userSig:(NSString *)userSig roomId:(UInt32)roomId {
-    TRTCParams *param = [TRTCParams new];
-    param.sdkAppId = sdkappid;
-    param.userId = userId;
-    param.roomId = roomId;
-    param.role = TRTCRoleAnchor;
-    param.userSig = userSig;
-    [self.trtcCloud enterRoom:param appScene:TRTCAppSceneVideoCall];
-
-   TRTCVideoEncParam *videoEncParam = [TRTCVideoEncParam new];
-   videoEncParam.videoResolution = TRTCVideoResolution_640_360;
-   videoEncParam.videoBitrate = 550;
-   videoEncParam.videoFps = 15;
-   [self.trtcCloud setVideoEncoderParam:videoEncParam];
-
-   TXBeautyManager *beautyManager = [self.trtcCloud getBeautyManager];
-   [beautyManager setBeautyStyle:TXBeautyStyleNature];
-   [beautyManager setBeautyLevel:5];
-   [beautyManager setWhitenessLevel:1];
-
-   [self.trtcCloud setDebugViewMargin:userId margin:UIEdgeInsetsMake(80, 0, 0, 0)];
-}
-
-- (void)startLocalAudio {
-    [self.trtcCloud startLocalAudio];
-}
-
-- (void)startLocalPreview:(BOOL)isFrontCamera {
-    [self.trtcCloud startLocalPreview:isFrontCamera view:_subView];
-}
-
-- (void)startRemoteVideoView {
-    if (self.remoteUserIds.count > 0) {
-        [self.trtcCloud startRemoteView:self.remoteUserIds[0] view:_remoteView];
-    }
-}
-
-- (void)exitRoom {
-    [self.trtcCloud exitRoom];
-}
-
-- (void)dealloc {
-    [TRTCCloud destroySharedIntance];
-}
-
-/// delegate
-- (void)onUserVideoAvailable:(NSString *)userId available:(BOOL)available {
-    [[TrtcJzFlutterPlugin new].basicMessageChannel sendMessage:@"onUserVideoAvailable"];
-    if (available) {
-        [self.remoteUserIds addObject:userId];
-    }
-}
-
-- (void)onRemoteUserEnterRoom:(NSString *)userId {
-    [[TrtcJzFlutterPlugin new].basicMessageChannel sendMessage:@"onRemoteUserEnterRoom"];
 }
 
 @end
