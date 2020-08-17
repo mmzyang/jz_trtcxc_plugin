@@ -30,7 +30,7 @@
             _subView.frame = frame;
         }
         
-        _remoteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 120)];
+        _remoteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 120, 200)];
         [_subView addSubview:_remoteView];
         
         [JZTRTCVideoViewController storeLocalVideoView:_subView];

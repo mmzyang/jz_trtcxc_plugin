@@ -136,5 +136,10 @@
     [self.basicMessageChannel sendMessage:@"onRemoteUserEnterRoom"];
 }
 
+- (void)onEnterRoom:(NSInteger)result {
+    if (result > 0) {
+        [self.basicMessageChannel sendMessage:@"onLocalUserEnterRoom"];
+    }
+}
 
 @end
