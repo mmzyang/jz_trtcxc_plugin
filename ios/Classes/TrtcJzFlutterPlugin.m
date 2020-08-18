@@ -136,10 +136,17 @@
     [self.basicMessageChannel sendMessage:@"onRemoteUserEnterRoom"];
 }
 
+- (void)onRemoteUserLeaveRoom:(NSString *)userId reason:(NSInteger)reason {
+    [self.basicMessageChannel sendMessage:@"onRemoteUserLeaveRoom"];
+}
+
 - (void)onEnterRoom:(NSInteger)result {
     if (result > 0) {
         [self.basicMessageChannel sendMessage:@"onLocalUserEnterRoom"];
     }
 }
 
+- (void)onExitRoom:(NSInteger)reason {
+    [self.basicMessageChannel sendMessage:@"onExitRoom"];
+}
 @end
