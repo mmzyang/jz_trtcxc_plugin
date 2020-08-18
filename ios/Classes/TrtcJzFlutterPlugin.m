@@ -126,27 +126,27 @@
 
 /// delegate
 - (void)onUserVideoAvailable:(NSString *)userId available:(BOOL)available {
-    [self.basicMessageChannel sendMessage:@"onUserVideoAvailable"];
+    [self.basicMessageChannel sendMessage:@{@"key":@"onUserVideoAvailable", @"value":@{}}];
     if (available) {
         [self.remoteUserIds addObject:userId];
     }
 }
 
 - (void)onRemoteUserEnterRoom:(NSString *)userId {
-    [self.basicMessageChannel sendMessage:@"onRemoteUserEnterRoom"];
+    [self.basicMessageChannel sendMessage:@{@"key":@"onRemoteUserEnterRoom", @"value":@{}}];
 }
 
 - (void)onRemoteUserLeaveRoom:(NSString *)userId reason:(NSInteger)reason {
-    [self.basicMessageChannel sendMessage:@"onRemoteUserLeaveRoom"];
+    [self.basicMessageChannel sendMessage:@{@"key":@"onRemoteUserLeaveRoom", @"value":@{@"reason":@(reason)}}];
 }
 
 - (void)onEnterRoom:(NSInteger)result {
     if (result > 0) {
-        [self.basicMessageChannel sendMessage:@"onLocalUserEnterRoom"];
+        [self.basicMessageChannel sendMessage:@{@"key":@"onEnterRoom", @"value":@{}}];
     }
 }
 
 - (void)onExitRoom:(NSInteger)reason {
-    [self.basicMessageChannel sendMessage:@"onExitRoom"];
+    [self.basicMessageChannel sendMessage:@{@"key":@"onExitRoom", @"value":@{@"reason":@(reason)}}];
 }
 @end
