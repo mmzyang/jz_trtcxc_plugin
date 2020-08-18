@@ -124,29 +124,50 @@
     [TRTCCloud destroySharedIntance];
 }
 
+
 /// delegate
 - (void)onUserVideoAvailable:(NSString *)userId available:(BOOL)available {
-    [self.basicMessageChannel sendMessage:@{@"key":@"onUserVideoAvailable", @"value":@{}}];
+    NSDictionary *dic = @{@"key":@"onUserVideoAvailable", @"value":@{}};
+    [self.basicMessageChannel sendMessage:[self convert2JSONWithDictionary:dic]];
     if (available) {
         [self.remoteUserIds addObject:userId];
     }
 }
 
 - (void)onRemoteUserEnterRoom:(NSString *)userId {
-    [self.basicMessageChannel sendMessage:@{@"key":@"onRemoteUserEnterRoom", @"value":@{}}];
+    NSDictionary *dic = @{@"key":@"onRemoteUserEnterRoom", @"value":@{}};
+    [self.basicMessageChannel sendMessage:[self convert2JSONWithDictionary:dic]];
 }
 
 - (void)onRemoteUserLeaveRoom:(NSString *)userId reason:(NSInteger)reason {
-    [self.basicMessageChannel sendMessage:@{@"key":@"onRemoteUserLeaveRoom", @"value":@{@"reason":@(reason)}}];
+    NSDictionary *dic = @{@"key":@"onRemoteUserLeaveRoom", @"value":@{@"reason":@(reason)}};
+    [self.basicMessageChannel sendMessage:[self convert2JSONWithDictionary:dic]];
 }
 
 - (void)onEnterRoom:(NSInteger)result {
     if (result > 0) {
-        [self.basicMessageChannel sendMessage:@{@"key":@"onEnterRoom", @"value":@{}}];
+        NSDictionary *dic = @{@"key":@"onEnterRoom", @"value":@{}};
+        [self.basicMessageChannel sendMessage:[self convert2JSONWithDictionary:dic]];
     }
 }
 
 - (void)onExitRoom:(NSInteger)reason {
-    [self.basicMessageChannel sendMessage:@{@"key":@"onExitRoom", @"value":@{@"reason":@(reason)}}];
+    NSDictionary *dic = @{@"key":@"onExitRoom", @"value":@{@"reason":@(reason)}};
+    [self.basicMessageChannel sendMessage:[self convert2JSONWithDictionary:dic]];
 }
+
+// 字典转换 json
+- (NSString *)convert2JSONWithDictionary:(NSDictionary *)dic{
+    NSError *err;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:0 error:&err];
+    NSString *jsonString;
+    if (!jsonData) {
+        NSLog(@"%@",err);
+    }else{
+        jsonString = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
+    }
+    NSLog(@"%@",jsonString);
+    return jsonString;
+}
+
 @end
