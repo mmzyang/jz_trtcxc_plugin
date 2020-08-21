@@ -1,3 +1,8 @@
+/*
+ * @Descripttion: 
+ * @Author: xuci
+ * @Date: 2020-08-06 16:42:19
+ */
 package com.example.trtc_jz_flutter;
 
 import androidx.annotation.NonNull;
@@ -35,7 +40,9 @@ public class TrtcJzFlutterPlugin implements FlutterPlugin, MethodCallHandler {
   public static void registerWith(Registrar registrar) {
     final MethodChannel channel = new MethodChannel(registrar.messenger(), "trtc_jz_flutter");
     channel.setMethodCallHandler(new TrtcJzFlutterPlugin());
+    registrar.platformViewRegistry().registerViewFactory("com.jz.TrtcJzFlutterViewAndroid", new JZFlutterPlatformViewFactory(registrar));
   }
+
 
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {

@@ -105,14 +105,14 @@
 }
 
 - (void)startLocalPreview:(BOOL)isFrontCamera {
-    UIView *localVideoView = [JZTRTCVideoViewController getLocalView];
-    [self.trtcCloud startLocalPreview:isFrontCamera view:localVideoView];
+    UIView *remoteVideoView = [JZTRTCVideoViewController getRemoteView];
+    [self.trtcCloud startLocalPreview:isFrontCamera view:remoteVideoView];
 }
 
 - (void)startRemoteVideoView {
     if (self.remoteUserIds.count > 0) {
-        UIView *remoteVideoView = [JZTRTCVideoViewController getRemoteView];
-        [self.trtcCloud startRemoteView:self.remoteUserIds[0] view:remoteVideoView];
+        UIView *localVideoView = [JZTRTCVideoViewController getLocalView];
+        [self.trtcCloud startRemoteView:self.remoteUserIds[0] view:localVideoView];
     }
 }
 
@@ -151,6 +151,17 @@
     }
 }
 
+//收到自定义消息回调
+- (void)onRecvCustomCmdMsgUserId:(NSString *)userId cmdID:(NSInteger)cmdID seq:(UInt32)seq message:(NSData *)message {
+
+}
+
+- (void)onNetworkQuality: (TRTCQualityInfo*)localQuality remoteQuality:(NSArray<TRTCQualityInfo*>*)remoteQuality {
+    NSString *message = [self getNetworkStatusMessage:remoteQuality local:localQuality];
+    NSDictionary *dic = @{@"key":@"onNetworkQuality", @"value":@{@"message":message}};
+    [self.basicMessageChannel sendMessage:[self convert2JSONWithDictionary:dic]];
+}
+
 - (void)onExitRoom:(NSInteger)reason {
     NSDictionary *dic = @{@"key":@"onExitRoom", @"value":@{@"reason":@(reason)}};
     [self.basicMessageChannel sendMessage:[self convert2JSONWithDictionary:dic]];
@@ -168,6 +179,30 @@
     }
     NSLog(@"%@",jsonString);
     return jsonString;
+}
+
+- (NSString *)getNetworkStatusMessage:(NSArray<TRTCQualityInfo*>*)remoteQuality local:(TRTCQualityInfo*)localQuality  {
+    BOOL localNetworkStatusBad = NO;
+    BOOL remoteNetworkStatusBad = NO;
+    if (remoteQuality.count > 0) {
+        if (localQuality.quality == 4 || localQuality.quality == 5 || localQuality.quality == 6) {
+            localNetworkStatusBad = YES;
+        }
+        if (remoteQuality[0].quality == 4 || remoteQuality[0].quality == 5 || remoteQuality[0].quality == 6) {
+            remoteNetworkStatusBad = YES;
+        }
+        if (localNetworkStatusBad && !remoteNetworkStatusBad) {
+            return @"本地视频网络差";
+        } else if (localNetworkStatusBad && remoteNetworkStatusBad) {
+            return @"当前视频网络差";
+        } else if (!localNetworkStatusBad && remoteNetworkStatusBad) {
+            return @"坐席视频网络差";
+        } else {
+            return @"";
+        }
+    } else {
+        return @"";
+    }
 }
 
 @end

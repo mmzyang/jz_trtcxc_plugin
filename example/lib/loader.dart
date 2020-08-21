@@ -4,6 +4,7 @@
  * @Date: 2020-08-10 15:02:36
  */
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -27,16 +28,8 @@ class JZTRTCLoader extends StatefulWidget {
 }
 
 class _JZTRTCLoaderState extends State {
-  static const EventChannel eventChannel =
-      EventChannel('com.jz.TrtcJzFlutterView.Event');
   @override
   void initState() {
-    eventChannel.receiveBroadcastStream("init").listen((data) {
-      print("native 回调的值：" + data.toString());
-    }, onError: (error) {
-      print("native 回调的错误：" + error.toString());
-    });
-
     super.initState();
   }
 
@@ -60,20 +53,37 @@ class _JZTRTCLoaderState extends State {
         ));
   }
 
-  UiKitView get localVideoView {
-    return UiKitView(
-      viewType: 'com.jz.TrtcJzFlutterView',
-      creationParams: <String, dynamic>{
-        "x": 0,
-        "y": 20,
-        "width": 400,
-        "height": 200,
-        "text": "点击开始双录",
-      },
-      creationParamsCodec: const StandardMessageCodec(),
-      onPlatformViewCreated: (id) {},
-      hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-    );
+  Widget get localVideoView {
+    if (Platform.isIOS) {
+      return Container(
+          width: 200,
+          height: 100,
+          child: UiKitView(
+            viewType: 'com.jz.TrtcJzFlutterView',
+            creationParams: <String, dynamic>{
+              "text": "点击开始双录",
+            },
+            creationParamsCodec: const StandardMessageCodec(),
+            onPlatformViewCreated: (id) {},
+            hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+          ));
+    } else {
+      return Container(
+        width: 200,
+        height: 100,
+        child: AndroidView(
+          viewType: 'com.jz.TrtcJzFlutterViewAndroid',
+          creationParams: {
+            "myContent": "通过参数传入的文本内容,I am 原生view",
+          },
+          creationParamsCodec: const StandardMessageCodec(),
+          hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+          onPlatformViewCreated: (id) {
+            print(id);
+          },
+        ),
+      );
+    }
   }
 
   void _openDSRSDK() async {

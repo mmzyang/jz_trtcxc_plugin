@@ -30,10 +30,15 @@
             _subView.frame = frame;
         }
         
-        _remoteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 180, 260)];
+        CGFloat width = [[UIScreen mainScreen] bounds].size.width;
+        CGFloat height = [self getContentHeight:YES];
+        
+        _localView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height/2)];
+        [_subView addSubview:_localView];
+        _remoteView = [[UIView alloc] initWithFrame:CGRectMake(0, height/2, width, height/2)];
         [_subView addSubview:_remoteView];
         
-        [JZTRTCVideoViewController storeLocalVideoView:_subView];
+        [JZTRTCVideoViewController storeLocalVideoView:_localView];
         [JZTRTCVideoViewController storeRemoteVideoView:_remoteView];
         
         _channel = [FlutterMethodChannel methodChannelWithName:@"com.jz.TrtcJzFlutterView" binaryMessenger:messenger];
@@ -76,6 +81,13 @@
 
 - (nonnull UIView *)view {
     return _subView;
+}
+
+- (CGFloat)getContentHeight:(BOOL)hasNavigationBar {
+    CGFloat statusBarHeight =  [[UIApplication sharedApplication] statusBarFrame].size.height;
+    CGFloat screenHeight = [[UIScreen mainScreen] bounds].size.height;
+    
+    return hasNavigationBar ? screenHeight - statusBarHeight - 44 : screenHeight - statusBarHeight;
 }
 
 @end
