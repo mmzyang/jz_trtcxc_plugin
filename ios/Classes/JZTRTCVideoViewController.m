@@ -32,11 +32,18 @@
         
         CGFloat width = [[UIScreen mainScreen] bounds].size.width;
         CGFloat height = [self getContentHeight:YES];
+        CGFloat topBottom = 25;
+        CGFloat leftRight = 15;
+        CGFloat middle = 15;
+        CGFloat contentWidth = (width - leftRight * 2) / 2;
+        CGFloat contentHeight = (height - topBottom * 2 - middle) / 2;
         
-        _localView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height/2)];
+        _localView = [[UIView alloc] initWithFrame:CGRectMake(leftRight, topBottom, contentWidth, contentHeight)];
         [_subView addSubview:_localView];
-        _remoteView = [[UIView alloc] initWithFrame:CGRectMake(0, height/2, width, height/2)];
+        [self setCornerWithView:_localView viewSize:_localView.bounds.size corners:(UIRectCornerAllCorners) radius:5 borderColor:[UIColor lightGrayColor]];
+        _remoteView = [[UIView alloc] initWithFrame:CGRectMake(leftRight, topBottom + middle + contentHeight, contentWidth, contentHeight)];
         [_subView addSubview:_remoteView];
+        [self setCornerWithView:_remoteView viewSize:_remoteView.bounds.size corners:(UIRectCornerAllCorners) radius:5 borderColor:[UIColor lightGrayColor]];
         
         [JZTRTCVideoViewController storeLocalVideoView:_localView];
         [JZTRTCVideoViewController storeRemoteVideoView:_remoteView];
@@ -88,6 +95,24 @@
     CGFloat screenHeight = [[UIScreen mainScreen] bounds].size.height;
     
     return hasNavigationBar ? screenHeight - statusBarHeight - 44 : screenHeight - statusBarHeight;
+}
+
+- (void)setCornerWithView:(UIView*)view
+                 viewSize:(CGSize)viewSize
+                  corners:(UIRectCorner)corners
+                   radius:(CGFloat)radius
+              borderColor:(UIColor*)borderColor{
+    CGRect fr = CGRectZero;
+    fr.size = viewSize;
+    
+    UIBezierPath *round = [UIBezierPath bezierPathWithRoundedRect:fr byRoundingCorners:corners cornerRadii:CGSizeMake(radius, radius)];
+    
+    CAShapeLayer *shape = [[CAShapeLayer alloc]init];
+    
+    [shape setPath:round.CGPath];
+    shape.strokeColor = borderColor.CGColor;
+    shape.fillColor = [UIColor clearColor].CGColor;
+    [view.layer addSublayer:shape];
 }
 
 @end
